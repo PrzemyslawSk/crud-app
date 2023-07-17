@@ -3,7 +3,7 @@ package com.przemyslawsk.crudapp.controller;
 import com.przemyslawsk.crudapp.dto.ProductDTO;
 import com.przemyslawsk.crudapp.exception.NotFoundException;
 import com.przemyslawsk.crudapp.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
+@RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
@@ -38,7 +35,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO product) {
         ProductDTO savedProduct = productService.createProduct(product);
-        return new ResponseEntity<ProductDTO>(savedProduct, HttpStatus.CREATED);
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

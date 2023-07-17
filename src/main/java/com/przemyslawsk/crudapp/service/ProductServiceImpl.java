@@ -5,7 +5,7 @@ import com.przemyslawsk.crudapp.dto.ProductMapper;
 import com.przemyslawsk.crudapp.exception.NotFoundException;
 import com.przemyslawsk.crudapp.model.Product;
 import com.przemyslawsk.crudapp.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +13,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
 
     @Override
     public List<ProductDTO> getAllProducts() {
