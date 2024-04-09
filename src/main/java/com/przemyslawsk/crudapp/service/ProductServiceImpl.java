@@ -1,71 +1,60 @@
 package com.przemyslawsk.crudapp.service;
 
 import com.przemyslawsk.crudapp.dto.ProductDTO;
-import com.przemyslawsk.crudapp.dto.ProductMapper;
-import com.przemyslawsk.crudapp.exception.NotFoundException;
+import com.przemyslawsk.crudapp.mapper.ProductMapper;
 import com.przemyslawsk.crudapp.model.Product;
 import com.przemyslawsk.crudapp.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static com.przemyslawsk.crudapp.error.Error.INVALID_REQUEST;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private final ProductRepository productRepository;
+    private final ProductRepository repository;
+    private final ProductMapper mapper;
 
     @Override
     public List<ProductDTO> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(ProductMapper::mapToProductDTO)
-                .collect(Collectors.toList());
+        List<Product> products = repository.findAll();
+        return mapper.map(products);
     }
 
     @Override
     public ProductDTO getProductById(Long id) {
-        Optional<Product> product = productRepository.findById(id);
+        Product product = repository.findById(id)
+                .orElseThrow(INVALID_REQUEST::getError);
 
-        if(product.isPresent()) {
-            ProductDTO productDTO = ProductMapper
-                    .mapToProductDTO(product.get());
-            return productDTO;
-        } else {
-            throw new NotFoundException("Product with id " + id + " not found.");
-        }
+        return mapper.map(product);
     }
 
     @Override
-    public ProductDTO createProduct(ProductDTO productDTO) {
-        Product product = ProductMapper.mapToProduct(productDTO);
-        Product savedProduct = productRepository.save(product);
-        ProductDTO savedProductDTO = ProductMapper.mapToProductDTO(savedProduct);
+    public ProductDTO createProduct(Product product) {
 
-        return savedProductDTO;
+        return mapper.map(repository.save(product));
     }
 
     @Override
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Product with id " + id + " not found."));
+    public ProductDTO updateProduct(Long id, Product product) {
+        Product existingProduct = repository.findById(id)
+                .orElseThrow(INVALID_REQUEST::getError);
 
-        existingProduct.setName(productDTO.getName());
-        existingProduct.setDescription(productDTO.getDescription());
-        existingProduct.setPrice(productDTO.getPrice());
-        Product updatedProduct = productRepository.save(existingProduct);
+        existingProduct.setName(product.getName())
+                .setDescription(product.getDescription())
+                .setPrice(product.getPrice());
 
-        return ProductMapper.mapToProductDTO(updatedProduct);
+        return mapper.map(repository.save(existingProduct));
     }
 
     @Override
     public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("Product with id " + id + " not found."));
+        Product product = repository.findById(id)
+                        .orElseThrow(INVALID_REQUEST::getError);
 
-        productRepository.delete(product);
+        repository.delete(product);
     }
 
 }

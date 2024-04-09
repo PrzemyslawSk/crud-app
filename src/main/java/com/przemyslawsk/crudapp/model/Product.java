@@ -2,18 +2,18 @@ package com.przemyslawsk.crudapp.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "products")
+@Accessors(chain = true)
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Data
+@Entity
+@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
