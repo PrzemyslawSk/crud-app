@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Accessors(chain = true)
 @Data
@@ -25,4 +26,6 @@ public class Product {
     private String description;
     @Column(nullable = false, name = "price")
     private BigDecimal price;
+    @Column(nullable = false, name = "date_added")
+    private LocalDateTime dateAdded;
 }

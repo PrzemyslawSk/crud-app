@@ -7,6 +7,7 @@ import com.przemyslawsk.crudapp.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.przemyslawsk.crudapp.error.Error.INVALID_REQUEST;
@@ -33,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO createProduct(Product product) {
-
+        product.setDateAdded(LocalDateTime.now());
         return mapper.map(repository.save(product));
     }
 
